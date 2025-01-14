@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "dev.eknath.jottersspace"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "dev.eknath.jottersspace"
