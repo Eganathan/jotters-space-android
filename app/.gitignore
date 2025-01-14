@@ -3,7 +3,6 @@
 .gradle
 gradlew
 gradlew.bat
-app/src/main/assets/app_configuration_development.properties
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -20,3 +19,5 @@ gradle/
 .externalNativeBuild
 .cxx
 local.properties
+*.properties
+app/src/main/assets/*.properties
