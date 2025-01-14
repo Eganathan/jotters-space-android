@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.eknath.jottersspace.auth.ZAuthSDK
+import dev.eknath.jottersspace.ui.navigation.AppNav
 import dev.eknath.jottersspace.ui.theme.JottersSpaceTheme
 import kotlinx.coroutines.launch
 
@@ -26,61 +27,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JottersSpaceTheme {
-                GettingStartedScreen(modifier = Modifier)
+                AppNav()
             }
         }
-    }
-}
-
-@Composable
-fun GettingStartedScreen(modifier: Modifier = Modifier) {
-    val scope = rememberCoroutineScope()
-    val currentUser = ZAuthSDK.currentUser.collectAsState()
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text("name:"+ currentUser.value?.email)
-
-
-        Button(
-            onClick = {
-                scope.launch {
-                    ZAuthSDK.getCurrentUser()
-                }
-            },
-            content = {
-                Text(text = "re fetch user")
-            },
-        )
-
-
-        Button(
-            onClick = {
-                scope.launch {
-                    ZAuthSDK.initiateUserLogin()
-                }
-            },
-            content = {
-                Text(text = "Login")
-            },
-        )
-
-        Button(
-            onClick = {
-                scope.launch {
-                    ZAuthSDK.initiateUserSignUp(
-                        name = "text-eknath",
-                        email = "mail@eknath.dev"
-                    )
-                }
-            },
-            content = {
-                Text(text = "Sign Up")
-            },
-        )
     }
 }

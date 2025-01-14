@@ -61,4 +61,5 @@ dependencies {
     implementation(libs.android.sdk) //Zoho Catalyst SDK
     implementation(libs.androidx.navigation.compose) //Navigation for Compose
     implementation(libs.kotlinx.serialization.json) //Kotlin Serialization
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }
