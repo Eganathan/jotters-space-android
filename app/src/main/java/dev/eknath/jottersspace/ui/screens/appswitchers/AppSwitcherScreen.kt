@@ -21,12 +21,9 @@ fun AppSwitcherScreen(
     val currentUser = ZAuthSDK.currentUser.collectAsState()
 
     Text("Loading AppSwitcherScreen")
-    
 
-    LaunchedEffect(currentUser.value) {
-        if (currentUser.value != null)
-            navController.navigate(AppNavSpec.Home(userName = currentUser.value?.firstName ?: ""))
-        else
+
+    LaunchedEffect(Unit) {
             scope.launch {
                 if (ZAuthSDK.getCurrentUser() != null) {
                     navController.navigate(
