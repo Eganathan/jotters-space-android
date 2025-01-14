@@ -13,6 +13,7 @@ gradlew.bat
 /.idea
 gradle/
 /app/release
+/app/src/main/assets/*.properties
 /.idea/assetWizardSettings.xml
 .DS_Store
 /captures
