@@ -13,10 +13,10 @@ gradlew.bat
 /.idea
 gradle/
 /app/release
-/app/src/main/assets/*.properties
 /.idea/assetWizardSettings.xml
 .DS_Store
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+/app/src/main/assets/app_configuration_development.properties
