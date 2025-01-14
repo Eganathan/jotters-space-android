@@ -19,4 +19,4 @@ gradle/
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/assets/app_configuration_development.properties
+/app/src/main/assets/
