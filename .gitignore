@@ -19,4 +19,5 @@ gradle/
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/assets/
+*.properties
+app/src/main/assets/*.properties
