@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JottersSpace</string>
+    <string name="url_scheme">jotterspacedoteknathdotdev://</string>
 </resources>

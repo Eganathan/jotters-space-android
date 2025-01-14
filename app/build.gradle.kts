@@ -56,4 +56,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Zoho Catalyst SDK
+    implementation("com.zoho.catalyst:android-sdk:2.3.0")
 }
