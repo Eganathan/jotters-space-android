@@ -1,7 +1,6 @@
 package dev.eknath.jottersspace.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,7 +32,7 @@ fun AppNav(modifier: Modifier = Modifier) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = AppNavSpec.AppSwitcher,
+        startDestination = if (ZAuthSDK.isUserSignedIn()) AppNavSpec.AppSwitcher else AppNavSpec.GettingStarted,
     ) {
         composable<AppNavSpec.AppSwitcher> {
             AppSwitcherScreen(navController = navController)

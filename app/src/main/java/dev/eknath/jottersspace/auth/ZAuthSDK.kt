@@ -58,16 +58,19 @@ object ZAuthSDK {
 
     suspend fun getCurrentUser(): ZCatalystUser? {
         return suspendCoroutine { cont ->
-            catalystSDK.getCurrentUser(
-                success = { zUser ->
-                    _currentUser.value = zUser
-                    cont.resume(zUser)
-                    Log.e("Test", "User:S")
-                }, failure = {
-                    _currentUser.value = null
-                    cont.resume(null)
-                    Log.e("Test", "User:F")
-                })
+            if (isUserSignedIn())
+                catalystSDK.getCurrentUser(
+                    success = { zUser ->
+                        _currentUser.value = zUser
+                        cont.resume(zUser)
+                        Log.e("Test", "User:S")
+                    }, failure = {
+                        _currentUser.value = null
+                        cont.resume(null)
+                        Log.e("Test", "User:F")
+                    })
+            else
+                cont.resume(null)
         }
     }
 
