@@ -1,4 +1,4 @@
-package dev.eknath.jottersspace.auth
+package dev.eknath.jottersspace.zCatalystSDK
 
 import android.content.Context
 import android.util.Log
@@ -13,6 +13,8 @@ import kotlin.coroutines.suspendCoroutine
 
 object ZAuthSDK {
     private lateinit var catalystSDK: ZCatalystApp
+    val zApiSDK: ZApiSDK by lazy { ZApiSDK(catalystSDK) }
+
     private var isInitialized = false
 
     private val _currentUser: MutableStateFlow<ZCatalystUser?> = MutableStateFlow(null)

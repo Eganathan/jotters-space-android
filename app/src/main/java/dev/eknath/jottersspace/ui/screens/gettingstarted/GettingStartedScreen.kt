@@ -11,7 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import dev.eknath.jottersspace.auth.ZAuthSDK
+import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.coroutines.launch
 
 @Composable

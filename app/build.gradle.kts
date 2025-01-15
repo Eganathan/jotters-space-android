@@ -34,6 +34,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+//        freeCompilerArgs = listOf("-Xemit-jvm-type-annotations") // Required for Annotation Processing or @CatalystName() will not work
     }
     buildFeatures {
         compose = true
@@ -61,5 +62,5 @@ dependencies {
     implementation(libs.android.sdk) //Zoho Catalyst SDK
     implementation(libs.androidx.navigation.compose) //Navigation for Compose
     implementation(libs.kotlinx.serialization.json) //Kotlin Serialization
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation(libs.kotlinx.coroutines.android)
 }

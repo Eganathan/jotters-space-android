@@ -1,12 +1,16 @@
 package dev.eknath.jottersspace.ui.screens.appswitchers
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import dev.eknath.jottersspace.auth.ZAuthSDK
+import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -18,8 +22,14 @@ fun AppSwitcherScreen(
     navController: NavController,
     scope: CoroutineScope = rememberCoroutineScope()
 ) {
-    Text("Loading AppSwitcherScreen")
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Please Wait...")
+    }
 
     LaunchedEffect(Unit) {
         scope.launch {

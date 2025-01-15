@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.eknath.jottersspace.auth.ZAuthSDK
+import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import dev.eknath.jottersspace.ui.screens.appswitchers.AppSwitcherScreen
 import dev.eknath.jottersspace.ui.screens.gettingstarted.GettingStartedScreen
 import dev.eknath.jottersspace.ui.screens.home.HomeScreen
@@ -44,6 +44,7 @@ fun AppNav(modifier: Modifier = Modifier) {
 
         composable<AppNavSpec.Home> {
             val homeParams = it.toRoute<AppNavSpec.Home>()
+
             HomeScreen(navController = navController, name = homeParams.userName)
         }
     }
