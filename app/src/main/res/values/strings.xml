@@ -7,4 +7,5 @@
     <string name="note_content_placeholder">Your note here....</string>
     <string name="signup">Sign Up</string>
     <string name="login">Login</string>
+    <string name="notes">Notes</string>
 </resources>
