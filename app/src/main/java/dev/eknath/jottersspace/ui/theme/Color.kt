@@ -51,7 +51,7 @@ val OnTertiaryContainerDark = Color(0xFFEEEEEE)
 
 // Background: Default app background color
 val BackgroundLight = Color(0xFF222831)
-val BackgroundDark = Color(0xFF222831)
+val BackgroundDark = Color(0xFF1E1E1E)
 
 // On Background: Text/icons on the background
 val OnBackgroundLight = Color(0xFFEEEEEE)
