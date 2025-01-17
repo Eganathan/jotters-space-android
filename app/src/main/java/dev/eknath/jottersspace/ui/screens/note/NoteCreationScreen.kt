@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +31,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.entities.JotNote
+import dev.eknath.jottersspace.ui.components.DefaultBackButton
+import dev.eknath.jottersspace.ui.components.DefaultIconButton
 import dev.eknath.jottersspace.ui.components.DefaultTopAppBar
+import dev.eknath.jottersspace.ui.screens.gettingstarted.Spacer
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -49,14 +53,18 @@ fun NoteContent(
     var titleTextField by remember { mutableStateOf(TextFieldValue(jotNote.title)) }
     var noteTextField by remember { mutableStateOf(TextFieldValue(jotNote.note)) }
     val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
+    val tfColor = TextFieldDefaults.colors(
+        focusedContainerColor = MaterialTheme.colorScheme.background,
+        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+    )
 
     fun onSave() {
         val call: () -> Job = {
             scope.launch {
                 latestJot = onSaveChange(
                     latestJot.copy(
-                        note = noteTextField.text,
-                        title = titleTextField.text
+                        note = noteTextField.text.trimIndent(),
+                        title = titleTextField.text.trimIndent()
                     )
                 ).await()
                 createJob.value = null
@@ -77,8 +85,17 @@ fun NoteContent(
     Scaffold(
         topBar = {
             DefaultTopAppBar(
-                titleStringRes = R.string.empty_string,
-                isLoading = false
+                titleStringRes = R.string.note,
+                isLoading = false,
+                navigation = {
+                    DefaultBackButton(onBackPressed)
+                },
+                actions = {
+                    DefaultIconButton(
+                        iconRes = R.drawable.ic_options,
+                        onClick = {}
+                    )
+                }
             )
         }
     ) {
@@ -89,6 +106,7 @@ fun NoteContent(
                 .imePadding(),
             verticalArrangement = Arrangement.Top
         ) {
+            Spacer(height = 15.dp)
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -106,6 +124,10 @@ fun NoteContent(
                     )
                 },
                 textStyle = MaterialTheme.typography.titleLarge,
+                colors = tfColor.copy(
+                    focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                    unfocusedIndicatorColor  = MaterialTheme.colorScheme.background
+                )
             )
 
             TextField(
@@ -124,7 +146,8 @@ fun NoteContent(
                         style = MaterialTheme.typography.bodyLarge
                     )
                 },
-                textStyle = MaterialTheme.typography.bodyLarge
+                textStyle = MaterialTheme.typography.bodyLarge,
+                colors = tfColor
             )
         }
 
@@ -156,6 +179,6 @@ fun NoteContent(
     })
 
     DisposableEffect(key1 = Unit, effect = {
-        onDispose {  }
+        onDispose { }
     })
 }
