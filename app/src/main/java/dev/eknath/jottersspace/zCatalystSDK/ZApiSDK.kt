@@ -74,13 +74,29 @@ class ZApiSDK(private val zCatalystApp: ZCatalystApp) {
         )
     }
 
-    suspend fun createNewJot(
+    fun createNewJot(
         data: JotNote,
         onSuccess: (JotNote) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val row = data.getRowInstance(zJotsTable)
         row.create(
+            success = {
+                onSuccess(it.toJotNote())
+            },
+            failure = { exception ->
+                onFailure(exception)
+            }
+        )
+    }
+
+    fun updateJot(
+        data: JotNote,
+        onSuccess: (JotNote) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val row = data.getRowInstance(zJotsTable)
+        row.update(
             success = {
                 onSuccess(it.toJotNote())
             },
@@ -117,6 +133,9 @@ internal fun ZCatalystRow.toJotNote(): JotNote {
 
 internal fun JotNote.getRowInstance(table: ZCatalystTable): ZCatalystRow {
     val row = table.newRow()
+    if (this.id != 0L)
+        row.setColumnValue("ROWID", id)
+
     row.setColumnValue("title", title)
     row.setColumnValue("note", note)
     row.setColumnValue("is_deleted", isDeleted.toString())

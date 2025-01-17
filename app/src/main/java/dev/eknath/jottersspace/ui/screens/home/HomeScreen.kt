@@ -49,7 +49,11 @@ import dev.eknath.jottersspace.ui.screens.gettingstarted.Spacer
 import dev.eknath.jottersspace.ui.screens.note.NoteContent
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,14 +68,15 @@ fun HomeScreen(
     var currentJot: JotNote? by remember { mutableStateOf(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    fun createJot(jot: JotNote) {
-        scope.launch {
+    suspend fun createJot(jot: JotNote): JotNote {
+        return suspendCoroutine { cont ->
             zApiSDK.createNewJot(
                 data = JotNote(
                     title = jot.title,
                     note = jot.note
                 ),
                 onSuccess = {
+                    cont.resume(it)
                     scope.launch {
                         zApiSDK.getBulkJots(
                             onSuccess = {
@@ -84,9 +89,45 @@ fun HomeScreen(
                     }
                 },
                 onFailure = {
+                    cont.resume(jot)
                     Log.e("Test", "FFFF")
                 }
             )
+        }
+    }
+
+    suspend fun updateJot(jot: JotNote): JotNote {
+        return suspendCoroutine { cont ->
+            zApiSDK.updateJot(
+                data = jot,
+                onSuccess = {
+                    cont.resume(it)
+                    scope.launch {
+                        zApiSDK.getBulkJots(
+                            onSuccess = {
+                                jots.value = it.data
+                            },
+                            onFailure = {
+                                jots.value = emptyList()
+                            }
+                        )
+                    }
+                },
+                onFailure = {
+                    cont.resume(jot)
+                    Log.e("Test", "FFFF")
+                }
+            )
+        }
+    }
+
+    fun handleOnSave(jot: JotNote): Deferred<JotNote> {
+        return scope.async {
+            if (jot.id == 0L) {
+                createJot(jot)
+            } else {
+                updateJot(jot)
+            }
         }
     }
 
@@ -172,8 +213,8 @@ fun HomeScreen(
         if (currentJot != null)
             NoteContent(
                 jotNote = currentJot!!,
-                onValueChange = {
-                    createJot(it)
+                onSaveChange = {
+                    handleOnSave(it)
                 },
                 onBackPressed = {
                     currentJot = null
@@ -198,7 +239,11 @@ fun HomeScreen(
 }
 
 @Composable
-fun NoteListItem(note: JotNote, modifier: Modifier = Modifier, onClick: (JotNote) -> Unit = {}) {
+fun NoteListItem(
+    note: JotNote,
+    modifier: Modifier = Modifier,
+    onClick: (JotNote) -> Unit = {}
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()

@@ -14,10 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -28,17 +31,48 @@ import androidx.compose.ui.unit.dp
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.entities.JotNote
 import dev.eknath.jottersspace.ui.components.DefaultTopAppBar
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoteContent(
     modifier: Modifier = Modifier,
     jotNote: JotNote,
-    onValueChange: (JotNote) -> Unit,
+    onSaveChange: (JotNote) -> Deferred<JotNote>,
     onBackPressed: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    val updateJob: MutableState<Job?> = remember { mutableStateOf(null) }
+    val createJob: MutableState<Job?> = remember { mutableStateOf(null) }
+    var latestJot by remember { mutableStateOf(jotNote) }
     var titleTextField by remember { mutableStateOf(TextFieldValue(jotNote.title)) }
     var noteTextField by remember { mutableStateOf(TextFieldValue(jotNote.note)) }
     val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
+
+    fun onSave() {
+        val call: () -> Job = {
+            scope.launch {
+                latestJot = onSaveChange(
+                    latestJot.copy(
+                        note = noteTextField.text,
+                        title = titleTextField.text
+                    )
+                ).await()
+                createJob.value = null
+            }
+        }
+        if (createJob.value == null) {
+            if (latestJot.id == 0L) {
+                if (createJob.value == null || createJob.value?.isActive == false) {
+                    createJob.value = call()
+                }
+            } else {
+                updateJob.value?.cancel()
+                updateJob.value = call()
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -62,7 +96,7 @@ fun NoteContent(
                 value = titleTextField,
                 onValueChange = {
                     titleTextField = it
-                    onValueChange(jotNote.copy(title = it.text))
+                    onSave()
                 },
                 placeholder = {
                     Text(
@@ -82,7 +116,7 @@ fun NoteContent(
                 value = noteTextField,
                 onValueChange = {
                     noteTextField = it
-                    onValueChange(jotNote.copy(note = it.text))
+                    onSave()
                 },
                 placeholder = {
                     Text(
@@ -117,10 +151,11 @@ fun NoteContent(
 //    }
 
     LaunchedEffect(key1 = Unit, block = {
+        latestJot = jotNote
         focusRequester.requestFocus()
     })
-//
-//    DisposableEffect(key1 = visibility.value, effect = {
-//        onDispose { editorState.resetTextFieldAndSelection() }
-//    })
+
+    DisposableEffect(key1 = Unit, effect = {
+        onDispose {  }
+    })
 }
