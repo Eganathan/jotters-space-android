@@ -105,7 +105,6 @@ class ZApiSDK(private val zCatalystApp: ZCatalystApp) {
             }
         )
     }
-
 }
 
 internal fun ResponseInfo.toPagingInfo() = PagingInfo(

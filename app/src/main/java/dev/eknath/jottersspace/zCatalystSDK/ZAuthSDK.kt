@@ -43,17 +43,31 @@ object ZAuthSDK {
         }
     }
 
-    suspend fun initiateUserSignUp(name: String, email: String): Boolean {
-        return suspendCoroutine { cont ->
-            catalystSDK.signUp(
-                newUser = catalystSDK.newUser(firstName = name, email = email),
-                success = {
-                    cont.resume(true)
-                }, failure = {
-                    cont.resume(false)
-                }
-            )
-        }
+    fun initiateUserSignUp(
+        name: String, email: String,
+        onSuccess: (ZCatalystUser) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        catalystSDK.signUp(
+            newUser = catalystSDK.newUser(firstName = name, email = email),
+            success = {
+                onSuccess(it)
+            }, failure = {
+                onError(it.getErrorMsg().orEmpty())
+            }
+        )
+
+    }
+
+    fun logOutUser(onSuccess: () -> Unit, onError: () -> Unit) {
+        catalystSDK.logout(
+            success = {
+                _currentUser.value = null
+                onSuccess()
+            }, failure = {
+                onError()
+            }
+        )
     }
 
     fun isUserSignedIn(): Boolean = isInitialized && catalystSDK.isUserSignedIn()

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.eknath.jottersspace.R
+import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.coroutines.launch
 
@@ -83,7 +84,10 @@ fun PrimaryButton(
         enabled = enabled,
         interactionSource = interactionSource,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            disabledContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f),
+        ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Text(
@@ -123,6 +127,7 @@ fun GettingStartedScreen(navController: NavController) {
             PrimaryButton(
                 textRes = R.string.signup,
                 onClick = {
+                    navController.navigate(AppNavSpec.SignUpScreen)
                 }
             )
             Spacer(height = 10.dp)

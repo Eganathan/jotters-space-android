@@ -9,4 +9,8 @@
     <string name="login">Login</string>
     <string name="notes">Notes</string>
     <string name="note">Note</string>
+    <string name="confirm">SignUp</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="account_creation">Account Creation</string>
 </resources>

@@ -44,7 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.entities.JotNote
+import dev.eknath.jottersspace.ui.components.DefaultIconButton
 import dev.eknath.jottersspace.ui.components.DefaultTopAppBar
+import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import dev.eknath.jottersspace.ui.screens.gettingstarted.Spacer
 import dev.eknath.jottersspace.ui.screens.note.NoteContent
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
@@ -63,6 +65,7 @@ fun HomeScreen(
     name: String,
     scope: CoroutineScope = rememberCoroutineScope()
 ) {
+    val authSDK = ZAuthSDK
     val zApiSDK = ZAuthSDK.zApiSDK
     val jots = remember { mutableStateOf(emptyList<JotNote>()) }
     var currentJot: JotNote? by remember { mutableStateOf(null) }
@@ -135,7 +138,22 @@ fun HomeScreen(
         topBar = {
             DefaultTopAppBar(
                 titleStringRes = R.string.notes,
-                isLoading = false
+                isLoading = false,
+                actions = {
+                    DefaultIconButton(
+                        iconRes = R.drawable.ic_logout,
+                        onClick = {
+                            scope.launch {
+                                authSDK.logOutUser(
+                                    onSuccess = {
+                                        navController.navigate(AppNavSpec.AppSwitcher)
+                                    },
+                                    onError = {}
+                                )
+                            }
+                        }
+                    )
+                }
             )
 
         },

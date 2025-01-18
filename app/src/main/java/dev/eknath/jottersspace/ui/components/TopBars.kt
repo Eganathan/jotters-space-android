@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +72,7 @@ fun DefaultIconButton(
         Icon(
             painter = painterResource(iconRes),
             contentDescription = "back",
+            modifier = Modifier.sizeIn(maxHeight = 30.dp, maxWidth = 30.dp)
         )
     }
 }

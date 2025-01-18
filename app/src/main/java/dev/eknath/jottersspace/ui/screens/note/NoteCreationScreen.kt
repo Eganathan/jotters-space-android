@@ -126,7 +126,7 @@ fun NoteContent(
                 textStyle = MaterialTheme.typography.titleLarge,
                 colors = tfColor.copy(
                     focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                    unfocusedIndicatorColor  = MaterialTheme.colorScheme.background
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.background
                 )
             )
 
@@ -173,10 +173,13 @@ fun NoteContent(
 //        )
 //    }
 
-    LaunchedEffect(key1 = Unit, block = {
-        latestJot = jotNote
-        focusRequester.requestFocus()
-    })
+    LaunchedEffect(
+        key1 = Unit,
+        block = {
+            latestJot = jotNote
+            if (jotNote.id == 0L)
+                focusRequester.requestFocus()
+        })
 
     DisposableEffect(key1 = Unit, effect = {
         onDispose { }

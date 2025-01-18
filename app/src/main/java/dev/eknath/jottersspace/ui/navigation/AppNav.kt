@@ -6,10 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import dev.eknath.jottersspace.ui.screens.appswitchers.AppSwitcherScreen
+import dev.eknath.jottersspace.ui.screens.auth.SignUpScreen
 import dev.eknath.jottersspace.ui.screens.gettingstarted.GettingStartedScreen
 import dev.eknath.jottersspace.ui.screens.home.HomeScreen
+import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,6 +18,9 @@ sealed interface AppNavSpec {
 
     @Serializable
     data object AppSwitcher : AppNavSpec
+
+    @Serializable
+    data object SignUpScreen : AppNavSpec
 
     @Serializable
     data object GettingStarted : AppNavSpec
@@ -42,9 +46,12 @@ fun AppNav(modifier: Modifier = Modifier) {
             GettingStartedScreen(navController)
         }
 
+        composable<AppNavSpec.SignUpScreen> {
+            SignUpScreen(navController = navController)
+        }
+
         composable<AppNavSpec.Home> {
             val homeParams = it.toRoute<AppNavSpec.Home>()
-
             HomeScreen(navController = navController, name = homeParams.userName)
         }
     }
