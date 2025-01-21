@@ -1,11 +1,15 @@
 package dev.eknath.jottersspace.ui.screens.gettingstarted
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,19 +18,25 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +47,6 @@ import androidx.navigation.NavController
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
-import kotlinx.coroutines.launch
 
 
 //@Composable
@@ -108,6 +117,7 @@ fun Spacer(height: Dp = 5.dp, width: Dp = 5.dp) {
 fun GettingStartedScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val currentUser = ZAuthSDK.currentUser.collectAsState()
+    var isLoading by remember { mutableStateOf(false) }
 
     Scaffold(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         Column(
@@ -134,60 +144,48 @@ fun GettingStartedScreen(navController: NavController) {
             PrimaryButton(
                 textRes = R.string.login,
                 onClick = {
-                    scope.launch {
-                        ZAuthSDK.initiateUserLogin()
-                    }
+                    ZAuthSDK.initiateUserLogin(
+                        onLoad = { isLoading = true },
+                        onSuccess = {
+                            isLoading = false
+                            navController.navigate(AppNavSpec.Home(userName = ""))
+                        },
+                        onFailure = {
+                            isLoading = false
+                        }
+                    )
                 }
             )
         }
-    }
 
-//    Text("Getting Started Screen")
-//
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//
-//        Text("name:" + currentUser.value?.email)
-//
-//
-//        Button(
-//            onClick = {
-//                scope.launch {
-//                    ZAuthSDK.getCurrentUser()
-//                }
-//            },
-//            content = {
-//                Text(text = "re fetch user")
-//            },
-//        )
-//
-//
-//        Button(
-//            onClick = {
-//                scope.launch {
-//                    ZAuthSDK.initiateUserLogin()
-//                }
-//            },
-//            content = {
-//                Text(text = "Login")
-//            },
-//        )
-//
-//        Button(
-//            onClick = {
-//                scope.launch {
-//                    ZAuthSDK.initiateUserSignUp(
-//                        name = "text-eknath",
-//                        email = "mail@eknath.dev"
-//                    )
-//                }
-//            },
-//            content = {
-//                Text(text = "Sign Up")
-//            },
-//        )
-//    }
+        AnimatedVisibility(isLoading, enter = fadeIn(), exit = fadeOut()) {
+            LoadingDialog()
+        }
+    }
+}
+
+@Composable
+fun LoadingDialog(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.4f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .wrapContentSize(),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(50.dp))
+                Spacer(height = 10.dp)
+                Text("Loading...")
+            }
+        }
+    }
 }

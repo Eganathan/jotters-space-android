@@ -17,8 +17,9 @@ data class Status(val code: Int, val message: String)
 data class PagingInfo(
     val hasMoreData: Boolean,
     val totalRecords: Int,
+    val maxKeys: Int?,
+    val nextToken: String?,
 )
-
 
 @Serializable
 data class JotNote(

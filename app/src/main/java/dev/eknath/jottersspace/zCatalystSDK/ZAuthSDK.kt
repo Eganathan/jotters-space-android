@@ -30,17 +30,21 @@ object ZAuthSDK {
 
     }
 
-    suspend fun initiateUserLogin(): Boolean {
-        return suspendCoroutine { cont ->
-            catalystSDK.login(
-                customParams = hashMapOf(),
-                success = {
-                    cont.resume(true)
-                }, failure = {
-                    cont.resume(false)
-                }
-            )
-        }
+    fun initiateUserLogin(
+        onLoad: () -> Unit,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        onLoad()
+        catalystSDK.login(
+            customParams = hashMapOf(),
+            success = {
+                configureCurrentUser()
+                onSuccess()
+            }, failure = {
+                onFailure()
+            }
+        )
     }
 
     fun initiateUserSignUp(
@@ -88,6 +92,18 @@ object ZAuthSDK {
             else
                 cont.resume(null)
         }
+    }
+
+    private fun configureCurrentUser() {
+        if (isUserSignedIn())
+            catalystSDK.getCurrentUser(
+                success = { zUser ->
+                    _currentUser.value = zUser
+                }, failure = {
+                    _currentUser.value = null
+                })
+        else
+            _currentUser.value = null
     }
 
 }

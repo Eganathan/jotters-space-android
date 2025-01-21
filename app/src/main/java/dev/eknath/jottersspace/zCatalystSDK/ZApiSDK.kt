@@ -3,6 +3,7 @@ package dev.eknath.jottersspace.zCatalystSDK
 import com.zoho.catalyst.common.ResponseInfo
 import com.zoho.catalyst.datastore.ZCatalystDataStore
 import com.zoho.catalyst.datastore.ZCatalystRow
+import com.zoho.catalyst.datastore.ZCatalystSelectQuery
 import com.zoho.catalyst.datastore.ZCatalystTable
 import com.zoho.catalyst.filestore.ZCatalystFileStore
 import com.zoho.catalyst.org.ZCatalystUser
@@ -50,28 +51,16 @@ class ZApiSDK(private val zCatalystApp: ZCatalystApp) {
         }
     }
 
-    suspend fun getBulkJots(
+    fun getBulkJots(
+        nextToken: String? = null,
         onSuccess: (BulkJotResponse) -> Unit,
         onFailure: () -> Unit
     ) {
-        zJotsTable.getRows(
-            maxRows = 100,
-            success = { data, info ->
-                onSuccess(
-                    BulkJotResponse(
-                        data = data.toJotNotes(),
-                        info = info.toPagingInfo(),
-                        status = if (data.isNotEmpty()) Status(200, "Success") else Status(
-                            204,
-                            "Empty"
-                        )
-                    )
-                )
-            },
-            failure = { exception ->
-                onFailure()
-            }
-        )
+        if (nextToken != null) {
+            getBulkJotsWithToken(nextToken, onSuccess, onFailure)
+        } else {
+            getBulkJotsWithOutToken(onSuccess, onFailure)
+        }
     }
 
     fun createNewJot(
@@ -105,13 +94,93 @@ class ZApiSDK(private val zCatalystApp: ZCatalystApp) {
             }
         )
     }
+
+    fun deleteNote(
+        id: Long,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        zJotsTable.deleteRow(
+            rowId = id,
+            success = {
+                onSuccess()
+            },
+            failure = { exception ->
+                onFailure(exception)
+            }
+        )
+    }
+
+
+    private fun getBulkJotsWithToken(
+        token: String,
+        onSuccess: (BulkJotResponse) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        zJotsTable.getRows(
+            nextToken = token,
+            success = { data, info ->
+                onSuccess(
+                    BulkJotResponse(
+                        data = data.toJotNotes(),
+                        info = info.toPagingInfo(),
+                        status = if (data.isNotEmpty()) Status(200, "Success") else Status(
+                            204,
+                            "Empty"
+                        )
+                    )
+                )
+            },
+            failure = { exception ->
+                onFailure()
+            }
+        )
+    }
+
+    private fun getBulkJotsWithOutToken(
+        onSuccess: (BulkJotResponse) -> Unit,
+        onFailure: () -> Unit
+    ) {
+        zJotsTable.getRows(
+            maxRows = 100,
+            success = { data, info ->
+                onSuccess(
+                    BulkJotResponse(
+                        data = data.toJotNotes(),
+                        info = info.toPagingInfo(),
+                        status = if (data.isNotEmpty()) Status(200, "Success") else Status(
+                            204,
+                            "Empty"
+                        )
+                    )
+                )
+            },
+            failure = { exception ->
+                onFailure()
+            }
+        )
+    }
+
+    // Query
+    fun deleteMultipleJots(id: List<Long>, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        zDataStore.execute(
+            selectQuery = ZCatalystSelectQuery.Builder().build(),
+            success = {
+                onSuccess()
+            },
+            failure = {
+                onFailure(it.getErrorMsg().orEmpty())
+            }
+        )
+    }
 }
 
 internal fun ResponseInfo.toPagingInfo() = PagingInfo(
+    maxKeys = this.maxKeys,
+    nextToken = this.nextToken,
     hasMoreData = this.moreRecords,
     totalRecords = this.totalRecords ?: 0
 )
-
 
 internal fun List<ZCatalystRow>.toJotNotes(): List<JotNote> {
     return map { it.toJotNote() }
@@ -144,4 +213,22 @@ internal fun JotNote.getRowInstance(table: ZCatalystTable): ZCatalystRow {
 //sealed class ResultStatus<out T> {
 //    data class Success<out T>(val data: T) : ResultStatus<T>()
 //    data class Error(val text: String, val code: Int) : ResultStatus<Nothing>()
+//}
+
+//object ZCatalystQuery {
+//    fun deleteMultipleJots(ids: List<Long>): ZCatalystSelectQuery {
+//        return buildZQuery {
+//            selectAll()
+//            from("notes")
+//            where(column = "", comparator = ZCatalystUtil. Comparator.LIKE , value = "")
+//        }
+//    }
+//}
+//
+//
+////ZCatalyst DSL for building queries
+//private fun buildZQuery(block: ZCatalystSelectQuery.Builder.() -> Unit): ZCatalystSelectQuery {
+//    val builder = ZCatalystSelectQuery.Builder()
+//    builder.block()
+//    return builder.build()
 //}

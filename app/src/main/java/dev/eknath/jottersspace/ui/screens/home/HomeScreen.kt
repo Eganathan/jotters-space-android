@@ -70,6 +70,7 @@ fun HomeScreen(
     val jots = remember { mutableStateOf(emptyList<JotNote>()) }
     var currentJot: JotNote? by remember { mutableStateOf(null) }
     var isLoading by remember { mutableStateOf(false) }
+    var reFetchJot by remember { mutableStateOf(false) }
 
     suspend fun createJot(jot: JotNote): JotNote {
         return suspendCoroutine { cont ->
@@ -79,17 +80,8 @@ fun HomeScreen(
                     note = jot.note
                 ),
                 onSuccess = {
+                    reFetchJot = true
                     cont.resume(it)
-                    scope.launch {
-                        zApiSDK.getBulkJots(
-                            onSuccess = {
-                                jots.value = it.data
-                            },
-                            onFailure = {
-                                jots.value = emptyList()
-                            }
-                        )
-                    }
                 },
                 onFailure = {
                     cont.resume(jot)
@@ -104,17 +96,8 @@ fun HomeScreen(
             zApiSDK.updateJot(
                 data = jot,
                 onSuccess = {
+                    reFetchJot = true
                     cont.resume(it)
-                    scope.launch {
-                        zApiSDK.getBulkJots(
-                            onSuccess = {
-                                jots.value = it.data
-                            },
-                            onFailure = {
-                                jots.value = emptyList()
-                            }
-                        )
-                    }
                 },
                 onFailure = {
                     cont.resume(jot)
@@ -240,19 +223,22 @@ fun HomeScreen(
             )
     }
 
-    LaunchedEffect(Unit) {
-        scope.launch {
-            zApiSDK.getBulkJots(
-                onSuccess = {
-                    Log.e("Test", "SSSS: ${it.data.size}")
-                    jots.value = it.data
-                },
-                onFailure = {
-                    Log.e("Test", "FFFF")
-                    jots.value = emptyList()
-                }
-            )
-        }
+    LaunchedEffect(key1 = Unit, key2 = reFetchJot) {
+        if (reFetchJot || jots.value.isEmpty())
+            scope.launch {
+                zApiSDK.getBulkJots(
+                    onSuccess = {
+                        Log.e("Test", "SSSS: ${it.data.size}")
+                        jots.value = it.data
+                        reFetchJot = false
+                    },
+                    onFailure = {
+                        Log.e("Test", "FFFF")
+                        jots.value = emptyList()
+                        reFetchJot = false
+                    }
+                )
+            }
     }
 }
 
