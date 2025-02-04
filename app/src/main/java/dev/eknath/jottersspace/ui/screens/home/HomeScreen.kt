@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.entities.JotNote
@@ -63,7 +64,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     name: String,
-    scope: CoroutineScope = rememberCoroutineScope()
+    scope: CoroutineScope = rememberCoroutineScope(),
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val authSDK = ZAuthSDK
     val zApiSDK = ZAuthSDK.zApiSDK

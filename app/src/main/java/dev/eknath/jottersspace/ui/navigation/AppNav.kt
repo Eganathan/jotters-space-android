@@ -2,6 +2,7 @@ package dev.eknath.jottersspace.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -11,6 +12,7 @@ import dev.eknath.jottersspace.ui.screens.auth.EmailVerificationScreen
 import dev.eknath.jottersspace.ui.screens.auth.SignUpScreen
 import dev.eknath.jottersspace.ui.screens.gettingstarted.GettingStartedScreen
 import dev.eknath.jottersspace.ui.screens.home.HomeScreen
+import dev.eknath.jottersspace.ui.screens.home.HomeViewModel
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.serialization.Serializable
 
@@ -65,7 +67,12 @@ fun AppNav(modifier: Modifier = Modifier) {
 
         composable<AppNavSpec.Home> {
             val homeParams = it.toRoute<AppNavSpec.Home>()
-            HomeScreen(navController = navController, name = homeParams.userName)
+            val viewModel = hiltViewModel<HomeViewModel>(it)
+            HomeScreen(
+                navController = navController,
+                name = homeParams.userName,
+                viewModel = viewModel
+            )
         }
     }
 }

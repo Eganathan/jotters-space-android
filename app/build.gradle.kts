@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.0.21"
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -35,7 +37,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
 //        freeCompilerArgs = listOf("-Xemit-jvm-type-annotations") // Required for Annotation Processing or @CatalystName() will not work
+        freeCompilerArgs += "-Xjvm-default=all"
     }
+
     buildFeatures {
         compose = true
     }
@@ -63,4 +67,16 @@ dependencies {
     implementation(libs.androidx.navigation.compose) //Navigation for Compose
     implementation(libs.kotlinx.serialization.json) //Kotlin Serialization
     implementation(libs.kotlinx.coroutines.android)
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Can use kotlin Serialization as well
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
+    //hilt dependency injection
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    kapt(libs.hilt.android.compiler)
 }
