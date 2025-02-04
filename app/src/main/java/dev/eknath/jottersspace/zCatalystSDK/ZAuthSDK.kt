@@ -106,4 +106,16 @@ object ZAuthSDK {
             _currentUser.value = null
     }
 
+    suspend fun getToken(): String? {
+        return suspendCoroutine { cont ->
+            catalystSDK.getAccessToken(
+                success = { token ->
+                    cont.resume(token)
+                }, failure = {
+                    cont.resume(null)
+                }
+            )
+        }
+    }
+
 }

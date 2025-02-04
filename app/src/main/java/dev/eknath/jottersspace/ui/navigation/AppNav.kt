@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.eknath.jottersspace.ui.screens.appswitchers.AppSwitcherScreen
+import dev.eknath.jottersspace.ui.screens.auth.EmailVerificationScreen
 import dev.eknath.jottersspace.ui.screens.auth.SignUpScreen
 import dev.eknath.jottersspace.ui.screens.gettingstarted.GettingStartedScreen
 import dev.eknath.jottersspace.ui.screens.home.HomeScreen
@@ -21,6 +22,9 @@ sealed interface AppNavSpec {
 
     @Serializable
     data object SignUpScreen : AppNavSpec
+
+    @Serializable
+    data class EmailVerificationScreen(val email: String, val name: String) : AppNavSpec
 
     @Serializable
     data object GettingStarted : AppNavSpec
@@ -48,6 +52,15 @@ fun AppNav(modifier: Modifier = Modifier) {
 
         composable<AppNavSpec.SignUpScreen> {
             SignUpScreen(navController = navController)
+        }
+
+        composable<AppNavSpec.EmailVerificationScreen> {
+            val emailVerificationParams = it.toRoute<AppNavSpec.EmailVerificationScreen>()
+            EmailVerificationScreen(
+                navController = navController,
+                name = emailVerificationParams.name,
+                email = emailVerificationParams.email
+            )
         }
 
         composable<AppNavSpec.Home> {

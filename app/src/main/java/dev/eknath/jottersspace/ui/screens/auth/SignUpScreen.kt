@@ -35,6 +35,7 @@ import com.zoho.catalyst.org.ZCatalystUser
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.ui.components.DefaultBackButton
 import dev.eknath.jottersspace.ui.components.DefaultTopAppBar
+import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import dev.eknath.jottersspace.ui.screens.gettingstarted.PrimaryButton
 import dev.eknath.jottersspace.ui.screens.gettingstarted.Spacer
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
@@ -54,8 +55,14 @@ fun SignUpScreen(
     var currentUser by remember { mutableStateOf<ZCatalystUser?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    val isValidEmail by remember { derivedStateOf { emailTextField.text.isNotEmpty() && emailRegex.containsMatchIn(emailTextField.text)  } }
-    val isValidName by remember { derivedStateOf { nameTextField.text.isNotBlank()  } }
+    val isValidEmail by remember {
+        derivedStateOf {
+            emailTextField.text.isNotEmpty() && emailRegex.containsMatchIn(
+                emailTextField.text
+            )
+        }
+    }
+    val isValidName by remember { derivedStateOf { nameTextField.text.isNotBlank() } }
 
     Scaffold(
         modifier = Modifier
@@ -126,7 +133,7 @@ fun SignUpScreen(
                 }
                 Column(modifier = Modifier.padding(bottom = 20.dp)) {
                     Text(
-                        text = "By Clicking `Sign Up` you acknowledge that you have gone through the terms of service &  privacy policy of ours & our service providers that is Zoho Catalyst.",
+                        text = "* By Clicking `Sign Up` you acknowledge that you have gone through the terms of service &  privacy policy of ours & our service providers that is Zoho Catalyst.",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(bottom = 20.dp)
                     )
@@ -141,9 +148,14 @@ fun SignUpScreen(
                             onSuccess = {
                                 isInvited = true
                                 isLoading = false
+                                navController.navigate(
+                                    AppNavSpec.EmailVerificationScreen(
+                                        name = it.firstName,
+                                        email = it.email
+                                    )
+                                )
                             },
                             onError = {
-
                                 isLoading = false
                             }
                         )
