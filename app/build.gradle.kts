@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.0.21"
     kotlin("kapt")
+    id("androidx.room")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -38,6 +40,10 @@ android {
         jvmTarget = "11"
 //        freeCompilerArgs = listOf("-Xemit-jvm-type-annotations") // Required for Annotation Processing or @CatalystName() will not work
         freeCompilerArgs += "-Xjvm-default=all"
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
     buildFeatures {
@@ -79,4 +85,14 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     kapt(libs.hilt.android.compiler)
+
+    // Room Dependencies
+    val room_version = "2.6.1"
+
+    // Room Database Core
+    implementation("androidx.room:room-runtime:$room_version")
+    // Annotation Processor (KSP)
+    ksp("androidx.room:room-compiler:$room_version")
+    // Kotlin Extensions and Coroutines support for Room (Optional)
+    implementation("androidx.room:room-ktx:$room_version")
 }
