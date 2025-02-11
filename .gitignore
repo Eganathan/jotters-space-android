@@ -11,7 +11,7 @@ gradlew.bat
 /.idea/navEditor.xml
 /.idea/gradle.xml
 /.idea
-gradle/
+gradle/wrapper
 /app/release
 /.idea/assetWizardSettings.xml
 .DS_Store
