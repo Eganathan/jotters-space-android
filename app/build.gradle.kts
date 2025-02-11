@@ -90,9 +90,9 @@ dependencies {
     val room_version = "2.6.1"
 
     // Room Database Core
-    implementation("androidx.room:room-runtime:$room_version")
+    implementation(libs.androidx.room.runtime)
     // Annotation Processor (KSP)
-    ksp("androidx.room:room-compiler:$room_version")
+    ksp(libs.androidx.room.compiler)
     // Kotlin Extensions and Coroutines support for Room (Optional)
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation(libs.androidx.room.ktx)
 }
