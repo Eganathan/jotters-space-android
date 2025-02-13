@@ -15,4 +15,6 @@
     <string name="account_creation">Account Creation</string>
     <string name="proceed">Proceed</string>
     <string name="google_login">Login With Google</string>
+    <string name="create_note">Create Note</string>
+    <string name="create_note_description_for_short_cut">You can create a note quickly with out navigation or clicking any other button if you are already logged-in.</string>
 </resources>

@@ -9,9 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
+import dev.eknath.jottersspace.MainActivity
 import dev.eknath.jottersspace.ui.navigation.AppNavSpec
+import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -22,6 +24,9 @@ fun AppSwitcherScreen(
     navController: NavController,
     scope: CoroutineScope = rememberCoroutineScope()
 ) {
+    val activity = (LocalContext.current as MainActivity)
+    val shortCutCode = (if(activity.intent.getStringExtra("content_key")?.contains("create_note") == true) 1 else 0)
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -37,7 +42,8 @@ fun AppSwitcherScreen(
             if (currentUser != null) {
                 navController.navigate(
                     AppNavSpec.Home(
-                        userName = currentUser.firstName
+                        userName = currentUser.firstName,
+                        shortCutCode = shortCutCode,
                     )
                 )
             } else {

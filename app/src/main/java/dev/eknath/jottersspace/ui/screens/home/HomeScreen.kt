@@ -63,6 +63,7 @@ import kotlin.coroutines.suspendCoroutine
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    shortCutCode: Int,
     name: String,
     scope: CoroutineScope = rememberCoroutineScope(),
     viewModel: HomeViewModel = hiltViewModel()
@@ -73,6 +74,15 @@ fun HomeScreen(
     var currentJot: JotNote? by remember { mutableStateOf(null) }
     var isLoading by remember { mutableStateOf(false) }
     var reFetchJot by remember { mutableStateOf(false) }
+
+    //i want this to be first even before the launched effect or other UI
+    if (viewModel.shortCutExecutionCode == -1 && shortCutCode == 1) {
+        currentJot = JotNote(
+            title = "",
+            note = ""
+        )
+        viewModel.shortCutExecutionCode = 1
+    }
 
     suspend fun createJot(jot: JotNote): JotNote {
         return suspendCoroutine { cont ->

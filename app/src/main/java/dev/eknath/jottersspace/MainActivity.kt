@@ -1,5 +1,6 @@
 package dev.eknath.jottersspace
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,12 +15,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ZAuthSDK.initialize(this)
-
         enableEdgeToEdge()
         setContent {
             JottersSpaceTheme {
                 AppNav()
             }
         }
+    }
+}
+
+fun Context.getShortcutCode(): Int {
+    val shortCutCode = (this as MainActivity).intent.getStringExtra("content_key")?.takeIf { it.isNotBlank() && it.startsWith("_ssKey_") } ?: return 0
+    return when (shortCutCode) {
+        "_ssKey_create_note" -> 1
+        else -> 0
     }
 }

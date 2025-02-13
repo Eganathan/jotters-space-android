@@ -32,7 +32,7 @@ sealed interface AppNavSpec {
     data object GettingStarted : AppNavSpec
 
     @Serializable
-    data class Home(val userName: String) : AppNavSpec
+    data class Home(val userName: String, val shortCutCode:Int = 0) : AppNavSpec
 }
 
 @Composable
@@ -71,6 +71,7 @@ fun AppNav(modifier: Modifier = Modifier) {
             HomeScreen(
                 navController = navController,
                 name = homeParams.userName,
+                shortCutCode = homeParams.shortCutCode,
                 viewModel = viewModel
             )
         }

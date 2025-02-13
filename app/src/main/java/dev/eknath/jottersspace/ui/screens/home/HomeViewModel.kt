@@ -15,6 +15,8 @@ class HomeViewModel @Inject constructor(
     private val repository: JotsRepository
 ) : ViewModel() {
 
+    var shortCutExecutionCode = -1
+
     private val _bulkJots = MutableStateFlow<ApiResponse?>(value = null)
     val bulkJots = _bulkJots.asStateFlow()
 

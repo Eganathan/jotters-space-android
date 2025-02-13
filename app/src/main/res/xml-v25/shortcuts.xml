@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="create_jot_shortcut"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/create_note"
+        android:shortcutLongLabel="@string/create_note_description_for_short_cut"
+        android:icon="@drawable/ic_short_cut_creation"
+        >
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="dev.eknath.jottersspace"
+            android:targetClass="dev.eknath.jottersspace.MainActivity">
+
+            <extra android:name="content_key" android:value="_ssKey_create_note"/>
+        </intent>
+    </shortcut>
+</shortcuts>
