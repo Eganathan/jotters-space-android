@@ -44,32 +44,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import dev.eknath.jottersspace.MainActivity
 import dev.eknath.jottersspace.R
 import dev.eknath.jottersspace.ui.navigation.AppNavSpec
 import dev.eknath.jottersspace.zCatalystSDK.ZAuthSDK
 
-
-//@Composable
-//fun PrimaryButton(
-//    modifier: Modifier = Modifier,
-//    @StringRes textRes: Int,
-//    enabled: Boolean = true,
-//    onClick: () -> Unit
-//) {
-//    Button(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .heightIn(50.dp),
-//        enabled = enabled,
-//        onClick = onClick,
-//        shape = RoundedCornerShape(10.dp),
-//    ) {
-//        Text(
-//            text = stringResource(textRes),
-//            style = MaterialTheme.typography.labelLarge
-//        )
-//    }
-//}
 
 @Composable
 fun PrimaryButton(
@@ -134,6 +113,23 @@ fun GettingStartedScreen(navController: NavController) {
                 contentDescription = "Jotters Space logo"
             )
             Spacer(height = 200.dp)
+            PrimaryButton(
+                textRes = R.string.google_login,
+                onClick = {
+                    ZAuthSDK.googleLogin(
+                        activity = navController.context as MainActivity,
+                        onLoad = { isLoading = true },
+                        onSuccess = {
+                            isLoading = false
+                            navController.navigate(AppNavSpec.Home(userName = ""))
+                        },
+                        onFailure = {
+                            isLoading = false
+                        }
+                    )
+                }
+            )
+            Spacer(height = 10.dp)
             PrimaryButton(
                 textRes = R.string.signup,
                 onClick = {

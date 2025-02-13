@@ -1,5 +1,6 @@
 package dev.eknath.jottersspace.zCatalystSDK
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import com.zoho.catalyst.org.ZCatalystUser
@@ -45,6 +46,25 @@ object ZAuthSDK {
                 onFailure()
             }
         )
+    }
+
+    fun googleLogin(
+        activity: Activity,
+        onLoad: () -> Unit,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        onLoad()
+        catalystSDK.login(activity = activity,
+            googleClientID = "client_id_here",
+            success = {
+                onSuccess()
+                Log.e("Test", "Google Login Success")
+            },
+            failure = {
+                onFailure()
+                Log.e("Test", "Google Login Failure")
+            })
     }
 
     fun initiateUserSignUp(

@@ -14,4 +14,5 @@
     <string name="email">Email</string>
     <string name="account_creation">Account Creation</string>
     <string name="proceed">Proceed</string>
+    <string name="google_login">Login With Google</string>
 </resources>
