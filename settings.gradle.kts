@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "JottersSpace"
 include(":app")
- 
+include(":localize")
