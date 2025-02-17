@@ -6,6 +6,7 @@ import android.util.Log
 import com.zoho.catalyst.org.ZCatalystUser
 import com.zoho.catalyst.setup.ZCatalystApp
 import com.zoho.catalyst.setup.ZCatalystSDKConfigs
+import dev.eknath.jottersspace.getPannaiNotificationDeviceId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.resume
@@ -23,12 +24,30 @@ object ZAuthSDK {
 
 
     fun initialize(context: Context) {
+        val deviceTokenForNotification = context.getPannaiNotificationDeviceId()
         catalystSDK = ZCatalystApp.init(
             context = context,
             environment = ZCatalystSDKConfigs.Environment.DEVELOPMENT
         )
+        if (deviceTokenForNotification != null)
+            registerNotification(deviceTokenForNotification)
         isInitialized = true
+    }
 
+    internal fun registerNotification(deviceToken: String) {
+        Log.d("FCM", "Catalyst Notification Registration Started")
+        catalystSDK.registerNotification(
+            deviceToken = deviceToken,
+            bundleId = "dev.eknath.jottersspace",
+            appID = "11585000000260007",
+            testDevice = true,
+            success = {
+                Log.d("FCM", "Catalyst Notification Registration Successful")
+            },
+            failure = {
+                Log.d("FCM", "Catalyst Notification Registration Failed e: ${it.localizedMessage}")
+            }
+        )
     }
 
     fun initiateUserLogin(
