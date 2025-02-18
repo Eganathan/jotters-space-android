@@ -17,7 +17,6 @@ android {
     defaultConfig {
         applicationId = "dev.eknath.jottersspace"
         minSdk = 24
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -39,7 +38,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
-//        freeCompilerArgs = listOf("-Xemit-jvm-type-annotations") // Required for Annotation Processing or @CatalystName() will not work
         freeCompilerArgs += "-Xjvm-default=all"
     }
 
@@ -89,15 +87,10 @@ dependencies {
     kapt(libs.hilt.android.compiler)
 
     // Room Dependencies
-    val room_version = "2.6.1"
-
-    // Room Database Core
     implementation(libs.androidx.room.runtime)
-    // Annotation Processor (KSP)
     ksp(libs.androidx.room.compiler)
-    // Kotlin Extensions and Coroutines support for Room (Optional)
     implementation(libs.androidx.room.ktx)
 
     // Google Services
-    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation(platform(libs.firebase.bom))
 }
