@@ -113,11 +113,26 @@ fun GettingStartedScreen(navController: NavController) {
                 contentDescription = "Jotters Space logo"
             )
             Spacer(height = 200.dp)
-            PrimaryButton(
+            /*PrimaryButton(
                 textRes = R.string.google_login,
                 onClick = {
                     ZAuthSDK.googleLogin(
                         activity = navController.context as MainActivity,
+                        onLoad = { isLoading = true },
+                        onSuccess = {
+                            isLoading = false
+                            navController.navigate(AppNavSpec.Home(userName = ""))
+                        },
+                        onFailure = {
+                            isLoading = false
+                        }
+                    )
+                }
+            )*/
+            PrimaryButton(
+                textRes = R.string.login,
+                onClick = {
+                    ZAuthSDK.initiateUserLogin(
                         onLoad = { isLoading = true },
                         onSuccess = {
                             isLoading = false
@@ -134,22 +149,6 @@ fun GettingStartedScreen(navController: NavController) {
                 textRes = R.string.signup,
                 onClick = {
                     navController.navigate(AppNavSpec.SignUpScreen)
-                }
-            )
-            Spacer(height = 10.dp)
-            PrimaryButton(
-                textRes = R.string.login,
-                onClick = {
-                    ZAuthSDK.initiateUserLogin(
-                        onLoad = { isLoading = true },
-                        onSuccess = {
-                            isLoading = false
-                            navController.navigate(AppNavSpec.Home(userName = ""))
-                        },
-                        onFailure = {
-                            isLoading = false
-                        }
-                    )
                 }
             )
         }
